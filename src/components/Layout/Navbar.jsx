@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import { ShoppingCart, Menu, X, User, LogOut, Package, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, LogOut, Package, LayoutDashboard, UserCircle } from 'lucide-react';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const { user, logout, isAdmin } = useAuth();
   const { getCartCount } = useCart();
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to={isAdmin ? '/admin/dashboard' : '/'} className="text-2xl font-bold flex items-center space-x-2">
             <ShoppingCart className="w-7 h-7" />
-            <span>MobileCovers</span>
+            <span>FaithAuraX</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -39,7 +40,6 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/" className="hover:text-blue-200 transition">Home</Link>
-                <Link to="/products" className="hover:text-blue-200 transition">Products</Link>
                 {user && <Link to="/orders" className="hover:text-blue-200 transition">My Orders</Link>}
               </>
             )}
@@ -61,18 +61,47 @@ const Navbar = () => {
 
             {/* User Menu */}
             {user ? (
-              <div className="hidden md:flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <User className="w-5 h-5" />
-                  <span className="text-sm">{user.name}</span>
-                </div>
+              <div className="relative">
                 <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1 p-2 hover:bg-blue-500 rounded-lg transition"
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="hidden md:flex items-center space-x-2 p-2 hover:bg-blue-500 rounded-lg transition"
                 >
-                  <LogOut className="w-5 h-5" />
-                  <span className="text-sm">Logout</span>
+                  <UserCircle className="w-6 h-6" />
+                  <span className="text-sm">{user.name}</span>
                 </button>
+
+                {/* Dropdown Menu */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
+                    <Link
+                      to="/profile"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>My Profile</span>
+                    </Link>
+                    <Link
+                      to="/orders"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      <Package className="w-4 h-4" />
+                      <span>My Orders</span>
+                    </Link>
+                    <hr className="my-2" />
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-gray-100 transition text-left"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="hidden md:flex space-x-2">
@@ -120,9 +149,14 @@ const Navbar = () => {
                 Products
               </Link>
               {user && (
-                <Link to="/orders" className="block py-2 hover:text-blue-200" onClick={() => setMobileMenuOpen(false)}>
-                  My Orders
-                </Link>
+                <>
+                  <Link to="/orders" className="block py-2 hover:text-blue-200" onClick={() => setMobileMenuOpen(false)}>
+                    My Orders
+                  </Link>
+                  <Link to="/profile" className="block py-2 hover:text-blue-200" onClick={() => setMobileMenuOpen(false)}>
+                    My Profile
+                  </Link>
+                </>
               )}
             </>
           )}

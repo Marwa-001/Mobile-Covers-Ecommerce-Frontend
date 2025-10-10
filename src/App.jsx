@@ -10,7 +10,7 @@ import Register from './pages/auth/Register';
 
 // Buyer Pages
 import Home from './pages/buyer/Home';
-import Products from './pages/buyer/Products';
+import BrandProducts from './pages/buyer/BrandProducts'; // NEW: Brand-specific products page
 import ProductDetail from './pages/buyer/ProductDetail';
 import Cart from './pages/buyer/Cart';
 import Checkout from './pages/buyer/Checkout';
@@ -41,7 +41,9 @@ function App() {
 
             {/* Buyer Routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
+            {/* REMOVED: /products route */}
+            {/* NEW: Brand-specific products page */}
+            <Route path="/brand/:brand" element={<BrandProducts />} />
             <Route path="/products/:slug" element={<ProductDetail />} />
             
             {/* Protected Buyer Routes */}
